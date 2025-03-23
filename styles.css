@@ -1,9 +1,9 @@
 body {
-    background-color: #fdf5e6; /* A warm sandy color */
+    background-color: #fef9ef; /* #fdf5e6; A warm sandy color */
     font-family: 'Arial', 'Helvetica', sans-serif;
     color: #333;
     line-height: 1.6;
-    font-size: 18px;
+    font-size: 16px;
     margin: 0;
     padding: 0;
     display: flex;
@@ -30,7 +30,7 @@ body {
 
 #portrait {
     width: 100%;
-    max-width: 300px;
+    max-width: 200px;
     height: auto;
     border-radius: 5px;
 }
@@ -48,6 +48,7 @@ body {
 
 #cyberspace {
     background-color: #000;
+    font-size: 15px;
     color: #00FF00;
     font-family: 'JetBrains Mono', monospace;
     padding: 0.2rem 0.4rem;
@@ -68,7 +69,7 @@ body {
 
 #research-img {
     width: 100%;
-    max-width: 300px;
+    max-width: 200px;
     height: auto;
     border-radius: 5px;
 }
@@ -98,7 +99,7 @@ body {
 
     #portrait {
         flex-shrink: 0;
-        width: 250px;
+        width: 225px;
     }
 
     #idea2code {
