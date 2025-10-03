@@ -5,87 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yuvraj Virk</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">    <script src="https://use.fontawesome.com/releases/v6.4.2/js/all.js"></script>
 </head>
 <body>
     <div class="container">
         <div id="info-card">
             <img src="assets/headshot1.jpg" alt="Profile Picture" id="portrait">
             <div class="info-text">
-                <h1>Yuvraj Virk</h1>
+                <h2>Yuvraj Virk</h2>
                 <p style="margin-top: -20px;">
-                    Senior at UC Davis studying Computer Science and Statistics and researching LLMs for Code
+                    First Year PhD Student in CS at University of Illinois at Urbana-Champaign
                 </p>
-                <i>ysvirk@ucdavis.edu</i>
+                <i>yvirk2@illinois.edu</i>
                 &nbsp;|&nbsp;
-                <a href="https://drive.google.com/file/d/12ySZFpV-fJvDYq4tJIqkQz-KCqgfPyWP/view?usp=sharing">CV</a> 
+                <a href="https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://scholar.google.com/citations%3Fuser%3DoaskGocAAAAJ%26hl%3Den&ved=2ahUKEwjP5v-ykoeQAxUYl4kEHb3pBV4QFnoECBcQAQ&usg=AOvVaw2FA8JeC821qmwCST4AdoAg" class="social-icon" title="Google Scholar">
+                    <i class="fas fa-graduation-cap"></i>
+                </a> 
                 &nbsp;|&nbsp;
-                <a href="https://github.com/yuvrajvirk">Github</a>
+                <a href="https://github.com/yuvrajvirk" class="social-icon" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                &nbsp;|&nbsp;
+                <a href="https://x.com/yuvrajvirk0" class="social-icon" title="X (Twitter)">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
             </div>
         </div>
         <div id="about">
-            <p><span id="cyberspace"> Welcome wary wanderer of cyberspace!</span> I'm Yuvraj (pronounced "yoo-v-raj"). I'm broadly interested in building tools for developing sophisticated software by naturally communicating high-level intent to computers.</p>
+            <p>Welcome wary wanderer of the interwebs! I'm Yuvraj (pronounced "yoo-v-raj"). I work on tools to make software development feel <em>natural</em> while still being very <em>intentional</em>.</p>
 
-            <p>To this end, I research LLMs for code and LLM-based tools for both end-users and developers. This includes methods to more effectively and efficiently verify LLM outputs.</p>
-
-            <!-- <div id="info-card">
-                <div class="info-text">
-                    <p> To this end, I research LLMs for code and LLM-based tools for both developers and end-users, aiding users in tasks such bug diagnosis and program comprehension. This involves LLM outputs are reliable or can be efficiently and effectively verified by users. </p>
-                </div>
-                <img src="assets/gulfOfExecution.svg" id="idea2code">
-            </div> -->
-
-            <h2>Research</h2>
-            <div id="research-card">
-                <img src="assets/calibration.png" alt="Calibration" id="research-img">
-                <div class="research-text">
-                    <div id="research-title">Calibration of Large Language Models on Code Summarization</div>
-                    <b>Yuvraj Virk</b>, Premkumar Devanbu, and Toufique Ahmed<br>
-                    <a href="https://arxiv.org/pdf/2404.19318">(FSE 2025) https://arxiv.org/pdf/2404.19318</a>
-                    <p> LLMs are pretrained to imitate humans. Using their token probabilities, we develop a well-calibrated confidence of whether an LLM-generated code summary is similar to what a developer would've wrote.</p>
-                </div>
+            <h3 class="section-title">Publications</h3>
+            <div class="section-text">
+                <div id="research-title"><a href="https://arxiv.org/pdf/2404.19318">Calibration of Large Language Models on Code Summarization</a></div>
+                Yuvraj Virk, Premkumar Devanbu, and Toufique Ahmed<br>
+                <span class="venue">FSE 2025<br></span>
             </div>
 
-            <div id="research-card">
-                <img src="assets/Vertical Model of End-User & AI Interaction.svg" alt="Verifiability Study" id="research-img">
-                <div class="research-text">
-                    <div id="research-title">Non-programmers Assessing AI-Generated Code: A Case Study of Business Users Analyzing Data</div>
-                    <b>Yuvraj Virk</b>, Dongyu Liu<br>
-                    <a href="assets/EndUserErrorDetection.pdf">Preprint</a>
-                    <p> LLMs serve as a data analysis tool for non-technical users, but they produce misleading results. We assessed marketing and sales professionals' ability to critically evaluate LLM-generated analyses of marketing data.</p>
-                </div>
-            </div>
-            
-            <h2>Miscellaneous Projects</h2>
-
-            <div id="research-card">
-                <img src="assets/nnvisualizer.png" alt="Neural Network Visualizer" id="research-img">
-                <div class="research-text">
-                    <div id="research-title">Neural Network Visualizer</div>
-                    <a href="https://ooberaj.github.io/neuralNetworkVisualizer/">Demo</a>
-                    &nbsp;|&nbsp;
-                    <a href="https://yuvrajvirk.github.io/neuralNetworkVisualizer/">Github</a>
-                    <p> Website that visualizes a character recognition neural network training on the browser in real-time</p>
-                </div>
+            <div class="section-text">
+                <div id="research-title"><a href="https://arxiv.org/abs/2508.06484">Non-programmers Assessing AI-Generated Code: A Case Study of Business Users Analyzing Data</a></div>
+                Yuvraj Virk, Dongyu Liu<br>
+                <span>VL/HCC 2025<br></span>
             </div>
 
-            <div id="research-card">
-                <img src="assets/plant_train_cv.png" alt="Neural Network Visualizer" id="research-img">
-                <div class="research-text">
-                    <div id="research-title">Plant Traits Computer Vision Model</div>
-                    <a href="https://github.com/Ooberaj/PlantTraitsCNN">Github</a>
-                    <p>Implemented & trained computer vision model to predict multiple real-valued traits e.g. fresh weight of a plant given its RGB-D image</p>
-                </div>
-            </div>       
-            
-            <div id="research-card">
-                <img src="assets/mechinterprace.png" alt="Neural Network Visualizer" id="research-img">
-                <div class="research-text">
-                    <div id="research-title">Where do Transformer-based language models store "race"?</div>
-                    <a href="https://github.com/Ooberaj/MechInterpRace">Github</a>
-                    <p>An attempt at using activation patching to causally link parts of 700M parameter gpt2-large to the generation of select facts involving race.</p>
-                </div>
+            <h3 class="section-title">Open Source</h3>
+            <div class="section-text">
+                <div id="research-title"><a href="github.com/yuvrajvirk/CodeProse/tree/main">CodeProse: Experimental IDE with markdown in code and passive documentation </a></div>
+                Memes in code!<br>
             </div>
 
+            <!-- <h3 class="section-title">Writing</h3> -->
         </div>
     </div>
 </body>
