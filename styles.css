@@ -88,6 +88,17 @@ body {
     text-decoration: underline;
 }
 
+#about a {
+    color: #333;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+#about a:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
 /* Media query for larger screens */
 @media screen and (min-width: 768px) {
     .container {
