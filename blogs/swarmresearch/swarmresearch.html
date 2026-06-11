@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Shepherd</title>
+        <title>SwarmResearch</title>
         <link rel="stylesheet" href="../../styles.css" />
         <link rel="stylesheet" href="../styles.css?v=20260610-fonts" />
         <link
@@ -46,7 +46,7 @@
             <article>
                 <header class="post-header">
                     <h1>
-                        Shepherd: Orchestrating Coding Agents for
+                        SwarmResearch: Orchestrating Coding Agents for
                         Open-Ended Discovery
                     </h1>
                     <div class="post-authors">
@@ -67,15 +67,15 @@
                 <figure class="wide-figure">
                     <img
                         src="assets/evolution_graph_annotated_clean.svg"
-                        alt="Evolution graph showing branching Shepherd search trajectories"
+                        alt="Evolution graph showing branching SwarmResearch search trajectories"
                     />
                     <figcaption>
-                        <b>Shepherd designs a speculative decoding algorithm</b>.
+                        <b>SwarmResearch designs a speculative decoding algorithm</b>.
                         A node is a spawned search agent and its solution. Edges
                         indicate that the lower node builds on the solution
                         above. The top node value shows spawn order; the bottom
                         value shows speedup over vanilla decoding. Using Codex
-                        GPT-5.5 High, Shepherd explores diverse approaches
+                        GPT-5.5 High, SwarmResearch explores diverse approaches
                         over ~3 hours rather than converging onto any one approach. The final
                         implementation is a retrieval-based decoding variant. On
                         Spec-Bench <a href="#ref-spec-bench">[2]</a>, it
@@ -112,9 +112,9 @@
                         <b>Only editing one program state</b>. Autoresearch's experimental loop exposes a single program state: all improvements are committed, regressions are reverted, and future search proceeds from the current best implementation. This loop design encourages greedy local search and makes it difficult to maintain competing high-level directions. Ideally, a harness should let search branch naturally: multiple versions of a program should evolve independently when they instantiate different ideas.
                     </li>
                 </ul>
-
+   
                 <p>
-                    Shepherd solves these problems in 2 simple ways: 1) <b>subagents with fresh context windows ideate and execute new experiments</b> 2) <b>all major edits have separate git branches</b>. It's implemented as three skills compatible with Claude Code and Codex. Launch up your coding agent and give it a spin! Pretty fun to watch :)
+                    SwarmResearch solves these problems in 2 simple ways: 1) <b>subagents with fresh context windows ideate and execute new experiments</b> 2) <b>all major edits have separate git branches</b>. It's implemented as three skills compatible with Claude Code and Codex. Launch up your coding agent and give it a spin! Pretty fun to watch :)
                 </p>
 
                 <!-- <section class="tldr" aria-labelledby="tldr-heading">
@@ -126,8 +126,8 @@
                             of ideas.
                         </li>
                         <li>
-                            Shepherd separates global coordination from local
-                            experimentation: Shepherd sees all results, but
+                            SwarmResearch separates global coordination from local
+                            experimentation: SwarmResearch sees all results, but
                             individual Search Agents see only local context.
                         </li>
                         <li>
@@ -143,37 +143,37 @@
                 <figure class="wide-figure">
                     <img
                         src="assets/approach_diagram.svg"
-                        alt="Overview diagram of the Shepherd orchestrator-subagent loop"
+                        alt="Overview diagram of the SwarmResearch orchestrator-subagent loop"
                     />
                 </figure>
 
                 <p>
-                    The harness has two primary roles: <em>Shepherd Agents</em> and
-                    <em>Search Agents</em>. The Shepherd Agent is the orchestrator.
+                    The harness has two primary roles: <em>SwarmResearch Agents</em> and
+                    <em>Search Agents</em>. The SwarmResearch Agent is the orchestrator.
                     It spawns and steers waves of concurrent
                     Search Agents and has access to <em>global</em> context: summaries of all Search Agent
                     attempts, including their approach and evaluated score.
                     Search Agents are subagents that come up with a new approach and implement, evaluate, and
                     iterate on it. <b>Context
                     separation is designed to preserve diversity among Search
-                    Agents while still giving the Shepherd Agent enough information to
-                    strategically steer the population</b>.
-                    Unlike classic orchestrator-subagent architectures, which partition complex tasks like large-scale code generation across subagents, Shepherd Agents do not decompose the problem into precise tasks. Their role is to
+                    Agents while still giving the SwarmResearch Agent enough information to
+                    strategically steer the population</b>. 
+                    Unlike classic orchestrator-subagent architectures, which partition complex tasks like large-scale code generation across subagents, Shehpherd Agents do not decompose the problem into precise tasks. Their role is to
                     steer population-level search behavior by initializing and maintaining a diverse population
                     of ideas, prioritizing Search Agents on promising
-                    ideas, and breaking out of plateaus. Shepherd Agents accomplish these goals with <i>3 steering mechanisms</i>:
+                    ideas, and breaking out of plateaus. SwarmResearch Agents accomplish these goals with <i>3 steering mechanisms</i>:
                 </p>
-
+                
                 <ol class="mechanism-list" id="mechanisms">
                     <li>
                         <figure class="side-figure mechanism-figure">
                             <img
                                 src="assets/swarmresearch_git_management.svg"
-                                alt="Diagram of Shepherd git branches and worktrees for Search Agents"
+                                alt="Diagram of SwarmResearch git branches and worktrees for Search Agents"
                             />
                         </figure>
-                        <strong>Git Branch.</strong>
-                        For every new Search Agent, the Shepherd Agent creates a new git branch and worktree from either the baseline commit, a completed Search Agent’s commit, or a merge of multiple Search Agent commits; each commit includes a solution. Every Search Agent begins by reading and modifying this <em>parent solution</em> in its worktree, so the parent shapes the neighborhood of solutions it explores. Parent selection, through branch setup, lets the Shepherd Agent steer the population's search without prescribing specific ideas. Branches from the minimal baseline encourage new from-scratch exploration, while branches from completed agents can direct effort toward promising or underdeveloped directions. Branching expresses a wide range of search patterns e.g., concurrent Search Agent fan-out around a promising solution, or deep serial chains to persistently build on attempts.
+                        <strong>Git Branch.</strong> 
+                        For every new Search Agent, the SwarmResearch Agent creates a new git branch and worktree from either the baseline commit, a completed Search Agent’s commit, or a merge of multiple Search Agent commits; each commit includes a solution. Every Search Agent begins by reading and modifying this <em>parent solution</em> in its worktree, so the parent shapes the neighborhood of solutions it explores. Parent selection, through branch setup, lets the SwarmResearch Agent steer the population's search without prescribing specific ideas. Branches from the minimal baseline encourage new from-scratch exploration, while branches from completed agents can direct effort toward promising or underdeveloped directions. Branching expresses a wide range of search patterns e.g., concurrent Search Agent fan-out around a promising solution, or deep serial chains to persistently build on attempts. 
                     </li>
                     <li>
                         <strong>Search agent type.</strong>
@@ -184,7 +184,7 @@
                     <li>
                         <strong>Prompts.</strong>
                         Since Search Agents only have local context of their parent,
-                        the Shepherd Agent can share prompts to give
+                        the SwarmResearch Agent can share prompts to give
                         minimal, relevant context or add directions. For
                         example, if Explorer Agents repeat similar ideas, prompts can
                         provide a summary of already explored ideas and instruct
@@ -192,18 +192,18 @@
                         Agents.
                     </li>
                 </ol>
-
-                <b>Why use an orchestrator at all?</b> We found that multiple agents which instead self-organize through a shared memory tend to all converge onto a single approach. When all agents see that another agent found a stronger solution, they decide to improve the best solution and abandon independent directions. Shepherd eliminates this possibility by restricting Search Agent context to their direct lineage. Still, the Shepherd Agent uses its global context to strategically distribute Search Agents across parents and write prompts that selectively pass relevant information to new Search Agents.
+                
+                <b>Why use an orchestrator at all?</b> We found that multiple agents which instead self-organize through a shared memory tend to all converge onto a single approach. When all agents see that another agent found a stronger solution, they decide to improve the best solution and abandon independent directions. SwarmResearch eliminates this possibility by restricting Search Agent context to their direct lineage. Still, the SwarmResearch Agent uses its global context to strategically distribute Search Agents across parents and write prompts that selectively pass relevant information to new Search Agents. 
 
                 <!-- Results -->
                 <h2 id="comparison">Comparison to Baselines</h2>
                 <div class="table-scroll" role="region" aria-label="Baseline comparison table">
                     <table>
                         <caption>
-                            Comparison of Shepherd to evolutionary baseline EvoX
+                            Comparison of SwarmResearch to evolutionary baseline EvoX
                             <a href="#ref-evox">[4]</a> and
                             multi-agent baseline CORAL
-                            <a href="#ref-coral">[5]</a>. <i>We run each approach once with Opus 4.6 and publicly available implementations</i>. Shepherd and
+                            <a href="#ref-coral">[5]</a>. <i>We run each approach once with Opus 4.6 and publicly available implementations</i>. SwarmResearch and
                             CORAL use Claude Code and run for $50 per task. EvoX is ran for 100 iterations ($23.50 per task average). <b>Bolded</b> means top score among
                             these methods.
                             <span class="green-highlight"
@@ -219,7 +219,7 @@
                                 <th scope="col">SOTA</th>
                                 <th scope="col">EvoX</th>
                                 <th scope="col">CORAL</th>
-                                <th scope="col">Shepherd</th>
+                                <th scope="col">SwarmResearch</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -351,7 +351,7 @@
                     <div>
                         <img
                             src="assets/swarmresearch_signal_processing_horizontal.svg"
-                            alt="Median-sized Shepherd diff for Signal Processing"
+                            alt="Median-sized SwarmResearch diff for Signal Processing"
                         />
                     </div>
                     <div>
@@ -361,29 +361,29 @@
                         />
                     </div>
                     <figcaption>
-                        Examples of median-sized Shepherd and CORAL
+                        Examples of median-sized SwarmResearch and CORAL
                         diffs for <em>Signal Processing</em>.
                     </figcaption>
                 </figure>
 
                 <p>
-                    <b>Shepherd's performance exceeds or matches evolutionary and multi-agent baselines on most open-ended optimization tasks, indicating more effective search of their solution spaces.</b> Shepherd exceeds performance of EvoX on 14/15 tasks. It clearly exceeds CORAL on 8/15 tasks and performs similarly on 5/15 tasks.  Differences between
-                    CORAL and Shepherd on mathematical optimization tasks Circle Packing, Erdos Min Overlap, and MMD-14-3 are
+                    <b>SwarmResearch's performance exceeds or matches evolutionary and multi-agent baselines on most open-ended optimization tasks, indicating more effective search of their solution spaces.</b> SwarmResearch exceeds performance of EvoX on 14/15 tasks. It clearly exceeds CORAL on 8/15 tasks and performs similarly on 5/15 tasks.  Differences between
+                    CORAL and SwarmResearch on mathematical optimization tasks Circle Packing, Erdos Min Overlap, and MMD-14-3 are
                     small. They could be reduced by further solution polishing
                     under higher budgets.
                 </p>
                 <p>
-                    <strong>Shepherd's experiments test higher-level changes than the baselines.
-                    </strong> For the average attempt and median task, Shepherd changes
+                    <strong>SwarmResearch's experiments test higher-level changes than the baselines.
+                    </strong> For the average attempt and median task, SwarmResearch changes
                     3.2&times; more lines of code than CORAL and 1.7&times; more than
                     EvoX. For example, in Signal
-                    Processing, Shepherd's median-sized diff tries a
+                    Processing, SwarmResearch's median-sized diff tries a
                     different type of signal processing algorithm while CORAL's makes a targeted change to
                     how signal corrections are computed. In
                     AHC016, a median-sized diff from CORAL involves tuning thresholds,
-                    while a median-sized diff from Shepherd redesigns the solver into
+                    while a median-sized diff from SwarmResearch redesigns the solver into
                     different modes applied under different conditions. On most
-                    tasks, higher-level experiments mean Shepherd discovers a
+                    tasks, higher-level experiments mean SwarmResearch discovers a
                     better solution. However, within the budget, CORAL better
                     exploited strong approaches and discovered meaningful
                     low-level changes on the systems task EPLB and heuristics
