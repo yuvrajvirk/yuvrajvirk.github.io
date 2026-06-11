@@ -1,0 +1,8 @@
+# SwarmResearch: Orchestrating Autoresearchers for Divergent Discovery
+
+Autoresearch demonstrated that coding agents can autonomously climb an objective to discover state-of-the-art solutions to open-ended optimization problems. However, they only climb one hill and spend all their time on micro-optimizations rather than exploring fundamentally different approaches. This is useful if micro-optimizations are your goal, but is terrible if your goal is to explore higher-level changes like different algorithm families. You might just try run a bunch in parallel but this gets expensive and we can be a lot smarter about it.
+
+Why do autoresearchers get stuck in a basin? We notice two reasons: poor context management and linear program versioning. They explore few high-level approaches early in their conversation history, converge onto a top approach, and continue onto a long-tail of low-level edits. Changes in high-level approach require multiple successive rounds of program rewrites or large edits. We hypothesize this behavior is unlikely when conditioned on a long conversation history consisting of small edits mostly refining one approach. So, we instead delegate experiment ideation and execution to agents with fresh or controlled context windows. We also hypothesize linear program versioning biases models towards greedy search behavior. Agents have access to one program to edit, and all edits that improve the score are kept. Preferably, agents can easily express a tree of program edits. For example, by keeping 2 different version of a program, an agent can more easily experiment with 2 different high-level approaches. So, our harness assigns all major edits to new git branches. 
+
+### 
+We implement simple interventions to ge

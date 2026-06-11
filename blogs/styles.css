@@ -1,0 +1,429 @@
+@font-face {
+    font-family: "Source Serif 4";
+    src: url("https://yoonholee.com/meta-harness/assets/fonts/SourceSerif4-Regular-subset.woff2")
+        format("woff2");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Source Serif 4";
+    src: url("https://yoonholee.com/meta-harness/assets/fonts/SourceSerif4-Semibold-subset.woff2")
+        format("woff2");
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Source Sans 3";
+    src: url("./fonts/source-sans-3-400.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Source Sans 3";
+    src: url("./fonts/source-sans-3-600.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Source Sans 3";
+    src: url("./fonts/source-sans-3-700.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Source Sans 3";
+    src: url("./fonts/source-sans-3-800.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+}
+
+:root {
+    --blog-bg: #fff;
+    --blog-text: #262626;
+    --blog-muted: #666;
+    --blog-accent: #a02020;
+    --blog-divider: rgba(38, 38, 38, 0.12);
+    --blog-code-bg: rgba(181, 9, 172, 0.05);
+    --blog-sans: "Source Sans 3", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, sans-serif;
+    --blog-serif: "Source Serif 4", Charter, "Iowan Old Style", Palatino,
+        Georgia, serif;
+    --blog-mono: "Source Code Pro", ui-monospace, SFMono-Regular, Menlo,
+        monospace;
+}
+
+body {
+    background: var(--blog-bg);
+    color: var(--blog-text);
+    display: block;
+    font-family: var(--blog-sans);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizelegibility;
+    font-feature-settings: "kern" 1, "onum" 1, "pnum" 1;
+    font-kerning: normal;
+    font-variant-ligatures: common-ligatures;
+    font-variant-numeric: oldstyle-nums proportional-nums;
+}
+
+.blog-index,
+.blog-post {
+    width: min(90%, 880px);
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+}
+
+.blog-nav {
+    margin-bottom: 2.5rem;
+    font-size: 15px;
+}
+
+.blog-nav span {
+    color: var(--blog-muted);
+    margin: 0 0.35rem;
+}
+
+.blog-nav a,
+.blog-header a,
+.post-preview a,
+.blog-post a {
+    color: var(--blog-text);
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.blog-nav a:hover,
+.blog-header a:hover,
+.post-preview a:hover,
+.blog-post a:hover {
+    color: var(--blog-accent);
+}
+
+.blog-header {
+    margin-bottom: 2.5rem;
+}
+
+.blog-header h1,
+.post-header h1 {
+    font-family: var(--blog-serif);
+    font-weight: 600;
+    margin: 0;
+    font-size: 34px;
+    line-height: 1.2;
+    font-variant-numeric: lining-nums;
+}
+
+.blog-header p {
+    margin-top: 0.8rem;
+}
+
+.post-preview {
+    margin-top: 1rem;
+}
+
+.post-preview h3 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.25;
+}
+
+.post-meta {
+    margin: 0.25rem 0 1rem;
+    color: var(--blog-muted);
+    font-size: 15px;
+}
+
+.post-authors {
+    color: var(--blog-text);
+    font-size: 17px;
+    line-height: 1.45;
+    margin: 1rem 0 1.5rem;
+}
+
+.post-authors p {
+    margin: 0.25rem 0;
+}
+
+.post-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.post-links a {
+    align-items: center;
+    border: 1px solid var(--blog-divider);
+    border-radius: 6px;
+    color: var(--blog-text);
+    display: inline-flex;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.4rem 1rem;
+    text-decoration: none;
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.post-links a:hover {
+    border-color: var(--blog-accent);
+    color: var(--blog-accent);
+}
+
+.post-links a[aria-disabled="true"] {
+    opacity: 0.5;
+}
+
+.mechanism-list li {
+    margin-bottom: 1rem;
+}
+
+.mechanism-list .mechanism-figure {
+    float: right;
+    margin: 0.5rem -0.2em 0.5rem 1.35rem;
+    width: 230px;
+}
+
+.blog-post h2 {
+    font-family: var(--blog-serif);
+    font-weight: 600;
+    margin-top: 2.5rem;
+    line-height: 1.2;
+    font-variant-numeric: lining-nums;
+}
+
+.blog-post h3 {
+    font-family: var(--blog-serif);
+    font-weight: 600;
+    margin-top: 2rem;
+    line-height: 1.25;
+    font-variant-numeric: lining-nums;
+}
+
+.blog-post h4 {
+    font-family: var(--blog-serif);
+    font-weight: 600;
+    margin: 1.5rem 0 0.25rem;
+    line-height: 1.25;
+    font-variant-numeric: lining-nums;
+}
+
+.blog-post figure {
+    margin: 2rem 0;
+}
+
+.blog-post figure img {
+    display: block;
+    margin: 0 auto;
+}
+
+.blog-post img,
+.blog-post video,
+.blog-post iframe {
+    max-width: 100%;
+}
+
+.blog-post figcaption,
+.blog-post table caption {
+    color: var(--blog-muted);
+    font-size: 15px;
+    line-height: 1.45;
+    margin-top: 0.65rem;
+}
+
+.wide-figure {
+    margin-left: calc(50% - min(46vw, 520px));
+    margin-right: calc(50% - min(46vw, 520px));
+}
+
+.wide-figure img {
+    width: min(92vw, 1040px);
+}
+
+.medium-figure img {
+    width: min(100%, 620px);
+}
+
+.side-figure {
+    float: right;
+    width: min(42%, 300px);
+    margin: 0.35rem 0 1rem 1.5rem;
+}
+
+.two-up {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.two-up figcaption {
+    grid-column: 1 / -1;
+}
+
+.tldr,
+.result-box {
+    border-left: 3px solid var(--blog-accent);
+    background: rgba(160, 32, 32, 0.04);
+    padding: 1rem 1.2rem;
+    margin: 2rem 0;
+}
+
+.tldr h2 {
+    margin-top: 0;
+}
+
+.tldr ul {
+    padding-left: 1.2rem;
+    margin-bottom: 0;
+}
+
+.result-box strong {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.table-scroll {
+    margin: 2rem 0;
+    overflow-x: auto;
+}
+
+.blog-post table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: 15px;
+    line-height: 1.35;
+    font-variant-numeric: lining-nums tabular-nums;
+}
+
+.blog-post th,
+.blog-post td {
+    border-bottom: 1px solid var(--blog-divider);
+    padding: 0.5rem 0.65rem;
+    text-align: right;
+    vertical-align: top;
+}
+
+.blog-post thead th:first-child,
+.blog-post thead th:nth-child(2),
+.blog-post tbody th[scope="rowgroup"],
+.blog-post tbody th[scope="row"],
+.blog-post tbody td.group-spacer {
+    text-align: left;
+}
+
+.blog-post tbody th[scope="rowgroup"] {
+    color: var(--blog-muted);
+    font-weight: 600;
+    width: 5rem;
+}
+
+.blog-post tbody td.group-spacer {
+    width: 5rem;
+}
+
+.blog-post tbody th[scope="row"] {
+    font-weight: 400;
+    min-width: 13rem;
+}
+
+.blog-post tbody td:not(.sota) strong {
+    color: #0f0f0f;
+    font-size: 1.02em;
+    font-weight: 800;
+}
+
+.blog-post thead th {
+    border-bottom: 2px solid var(--blog-text);
+}
+
+.blog-post tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.blog-post td.best {
+    background: transparent;
+}
+
+.blog-post td.best strong,
+.blog-post td.best span {
+    background-color: #e6f7e6;
+    border-radius: 3px;
+    display: inline-block;
+    padding: 0.12rem 0.4rem;
+}
+
+.blog-post .green-highlight {
+    background: #e6f7e6 !important;
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    color: inherit;
+    padding: 0.12rem 0.4rem;
+}
+
+.blog-post pre {
+    overflow-x: auto;
+    padding: 1rem;
+    background: #f8f8f8;
+    border: 1px solid var(--blog-divider);
+}
+
+.blog-post code {
+    background: var(--blog-code-bg);
+    border-radius: 3px;
+    font-family: var(--blog-mono);
+    font-size: 0.95em;
+    padding: 0.15em 0.35em;
+}
+
+.references {
+    border-top: 1px solid var(--blog-divider);
+    margin-top: 3rem;
+    padding-top: 1rem;
+}
+
+.references ol {
+    padding-left: 1.3rem;
+}
+
+.references li {
+    color: var(--blog-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0.85rem;
+}
+
+.references li:target {
+    color: var(--blog-text);
+}
+
+@media screen and (max-width: 520px) {
+    .blog-header h1,
+    .post-header h1 {
+        font-size: 30px;
+    }
+
+    .side-figure {
+        float: none;
+        width: 100%;
+        margin: 2rem 0;
+    }
+
+    .two-up {
+        grid-template-columns: 1fr;
+    }
+}

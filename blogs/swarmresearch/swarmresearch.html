@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SwarmResearch</title>
+        <link rel="stylesheet" href="../../styles.css" />
+        <link rel="stylesheet" href="../styles.css?v=20260610-fonts" />
+        <link
+            rel="preload"
+            href="https://yoonholee.com/meta-harness/assets/fonts/SourceSerif4-Regular-subset.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link
+            rel="preload"
+            href="https://yoonholee.com/meta-harness/assets/fonts/SourceSerif4-Semibold-subset.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link
+            rel="preload"
+            href="../fonts/source-sans-3-400.ttf"
+            as="font"
+            type="font/ttf"
+            crossorigin
+        />
+        <link
+            rel="preload"
+            href="../fonts/source-sans-3-800.ttf"
+            as="font"
+            type="font/ttf"
+            crossorigin
+        />
+    </head>
+    <body>
+        <main class="container blog-post">
+            <nav class="blog-nav" aria-label="Breadcrumb">
+                <a href="/">Yuvraj Virk</a>
+                <span aria-hidden="true">/</span>
+                <a href="/blogs/">Blog</a>
+            </nav>
+
+            <article>
+                <header class="post-header">
+                    <h1>
+                        SwarmResearch: Orchestrating Coding Agents for
+                        Open-Ended Discovery
+                    </h1>
+                    <div class="post-authors">
+                        <p>
+                            Yuvraj Virk, Chunqiu Steven Xia, Zack Edds, and
+                            Lingming Zhang
+                        </p>
+                    </div>
+                    <div class="post-links">
+                        <a href="#" aria-disabled="true">Paper</a>
+                        <a href="https://github.com/yuvrajvirk/swarmresearch"
+                            >GitHub</a
+                        >
+                    </div>
+                    <p class="post-meta">Last updated June 10, 2026</p>
+                </header>
+
+                <figure class="wide-figure">
+                    <img
+                        src="assets/evolution_graph_annotated_clean.svg"
+                        alt="Evolution graph showing branching SwarmResearch search trajectories"
+                    />
+                    <figcaption>
+                        <b>SwarmResearch designs a speculative decoding algorithm</b>.
+                        A node is a spawned search agent and its solution. Edges
+                        indicate that the lower node builds on the solution
+                        above. The top node value shows spawn order; the bottom
+                        value shows speedup over vanilla decoding. Using Codex
+                        GPT-5.5 High, SwarmResearch explores diverse approaches
+                        over ~3 hours rather than converging onto any one approach. The final
+                        implementation is a retrieval-based decoding variant. On
+                        Spec-Bench <a href="#ref-spec-bench">[2]</a>, it
+                        achieves a 4.8x mean speedup over vanilla decoding and a
+                        1.41x mean speedup over the strongest human-designed
+                        training-free baseline
+                        <a href="#ref-sam-decoding">[3]</a>. This result
+                        reflects strong performance on specific task types
+                        rather than a generally superior decoding algorithm.
+                    </figcaption>
+                </figure>
+
+
+                <!-- Intro -->
+                <p>
+                    Autoresearch <a href="#ref-autoresearch">[1]</a>
+                    demonstrated that coding agents can autonomously climb an
+                    objective to discover state-of-the-art solutions to
+                    open-ended optimization problems. <b>However, long-running
+                    coding agents only climb one hill and burn all their tokens
+                    on micro-optimizations rather than exploring fundamentally
+                    different approaches</b>. This is useful if
+                    micro-optimizations are your goal, but is terrible if your
+                    goal is to explore higher-level changes.
+                </p>
+                <p>
+                    Why do autoresearchers get stuck in a single approach? Two reasons:
+                </p>
+                <ul>
+                    <li>
+                        <b>Accumulating context around one approach</b>. Once one approach appears promising, long-running agents tend to proceed with a long-tail of low-level edits on it. Conditioned on this long history of incremental refinements, high-level shifts are unlikely especially since they requires several large program edits to beat the current best.
+                    </li>
+                    <li>
+                        <b>Only editing one program state</b>. Autoresearch's experimental loop exposes a single program state: all improvements are committed, regressions are reverted, and future search proceeds from the current best implementation. This loop design encourages greedy local search and makes it difficult to maintain competing high-level directions. Ideally, a harness should let search branch naturally: multiple versions of a program should evolve independently when they instantiate different ideas.
+                    </li>
+                </ul>
+   
+                <p>
+                    SwarmResearch solves these problems in 2 simple ways: 1) <b>subagents with fresh context windows ideate and execute new experiments</b> 2) <b>all major edits have separate git branches</b>. It's implemented as three skills compatible with Claude Code and Codex. Launch up your coding agent and give it a spin! Pretty fun to watch :)
+                </p>
+
+                <!-- <section class="tldr" aria-labelledby="tldr-heading">
+                    <h2 id="tldr-heading">TL;DR</h2>
+                    <ul>
+                        <li>
+                            Long-running coding agents often overfit their own
+                            conversation history and keep polishing one family
+                            of ideas.
+                        </li>
+                        <li>
+                            SwarmResearch separates global coordination from local
+                            experimentation: SwarmResearch sees all results, but
+                            individual Search Agents see only local context.
+                        </li>
+                        <li>
+                            Every major experiment gets its own git branch and
+                            worktree, so different solution families can evolve
+                            in parallel.
+                        </li>
+                    </ul>
+                </section> -->
+
+                <!-- How it works -->
+                <h2>How It Works</h2>
+                <figure class="wide-figure">
+                    <img
+                        src="assets/approach_diagram.svg"
+                        alt="Overview diagram of the SwarmResearch orchestrator-subagent loop"
+                    />
+                </figure>
+
+                <p>
+                    The harness has two primary roles: <em>SwarmResearch Agents</em> and
+                    <em>Search Agents</em>. The SwarmResearch Agent is the orchestrator.
+                    It spawns and steers waves of concurrent
+                    Search Agents and has access to <em>global</em> context: summaries of all Search Agent
+                    attempts, including their approach and evaluated score.
+                    Search Agents are subagents that come up with a new approach and implement, evaluate, and
+                    iterate on it. <b>Context
+                    separation is designed to preserve diversity among Search
+                    Agents while still giving the SwarmResearch Agent enough information to
+                    strategically steer the population</b>. 
+                    Unlike classic orchestrator-subagent architectures, which partition complex tasks like large-scale code generation across subagents, Shehpherd Agents do not decompose the problem into precise tasks. Their role is to
+                    steer population-level search behavior by initializing and maintaining a diverse population
+                    of ideas, prioritizing Search Agents on promising
+                    ideas, and breaking out of plateaus. SwarmResearch Agents accomplish these goals with <i>3 steering mechanisms</i>:
+                </p>
+                
+                <ol class="mechanism-list" id="mechanisms">
+                    <li>
+                        <figure class="side-figure mechanism-figure">
+                            <img
+                                src="assets/swarmresearch_git_management.svg"
+                                alt="Diagram of SwarmResearch git branches and worktrees for Search Agents"
+                            />
+                        </figure>
+                        <strong>Git Branch.</strong> 
+                        For every new Search Agent, the SwarmResearch Agent creates a new git branch and worktree from either the baseline commit, a completed Search Agent’s commit, or a merge of multiple Search Agent commits; each commit includes a solution. Every Search Agent begins by reading and modifying this <em>parent solution</em> in its worktree, so the parent shapes the neighborhood of solutions it explores. Parent selection, through branch setup, lets the SwarmResearch Agent steer the population's search without prescribing specific ideas. Branches from the minimal baseline encourage new from-scratch exploration, while branches from completed agents can direct effort toward promising or underdeveloped directions. Branching expresses a wide range of search patterns e.g., concurrent Search Agent fan-out around a promising solution, or deep serial chains to persistently build on attempts. 
+                    </li>
+                    <li>
+                        <strong>Search agent type.</strong>
+                        <em>Explorer Search Agents</em>
+                        have fresh context windows and use the content in their
+                        worktree as context. Fresh context windows makes them less anchored to previous work and better suited for trying higher-level changes in approach. Their worktree includes a lineage-local log of attempts <code>findings.md</code>, which Search Agents update at every commit, to avoid repeating their ancestors' mistakes. <em>Optimizer Search Agents</em> inherit their parent's conversation history in addition to the worktree, giving them an accumulating history to complete long-tail refinement like autoresearch successfully does.
+                    </li>
+                    <li>
+                        <strong>Prompts.</strong>
+                        Since Search Agents only have local context of their parent,
+                        the SwarmResearch Agent can share prompts to give
+                        minimal, relevant context or add directions. For
+                        example, if Explorer Agents repeat similar ideas, prompts can
+                        provide a summary of already explored ideas and instruct
+                        them to explore new ideas. Or, a prompt could share complementary findings from other Search
+                        Agents.
+                    </li>
+                </ol>
+                
+                <b>Why use an orchestrator at all?</b> We found that multiple agents which instead self-organize through a shared memory tend to all converge onto a single approach. When all agents see that another agent found a stronger solution, they decide to improve the best solution and abandon independent directions. SwarmResearch eliminates this possibility by restricting Search Agent context to their direct lineage. Still, the SwarmResearch Agent uses its global context to strategically distribute Search Agents across parents and write prompts that selectively pass relevant information to new Search Agents. 
+
+                <!-- Results -->
+                <h2 id="comparison">Comparison to Baselines</h2>
+                <div class="table-scroll" role="region" aria-label="Baseline comparison table">
+                    <table>
+                        <caption>
+                            Comparison of SwarmResearch to evolutionary baseline EvoX
+                            <a href="#ref-evox">[4]</a> and
+                            multi-agent baseline CORAL
+                            <a href="#ref-coral">[5]</a>. <i>We run each approach once with Opus 4.6 and publicly available implementations</i>. SwarmResearch and
+                            CORAL use Claude Code and run for $50 per task. EvoX is ran for 100 iterations ($23.50 per task average). <b>Bolded</b> means top score among
+                            these methods.
+                            <span class="green-highlight"
+                                >Highlighted in green</span
+                            >
+                            means score matches or exceeds state-of-the-art
+                            set by AI systems and human.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Task</th>
+                                <th scope="col">SOTA</th>
+                                <th scope="col">EvoX</th>
+                                <th scope="col">CORAL</th>
+                                <th scope="col">SwarmResearch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="rowgroup">Math</th>
+                                <th scope="row">Circle Packing &uarr;</th>
+                                <td class="sota">2.635983</td>
+                                <td>2.1064</td>
+                                <td>2.635985</td>
+                                <td class="best"><strong>2.635996</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">Signal Processing &uarr;</th>
+                                <td class="sota">0.8229</td>
+                                <td>0.7181</td>
+                                <td>0.7403</td>
+                                <td><strong>0.7970</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">Erdos Min Overlap &darr;</th>
+                                <td class="sota">0.380876</td>
+                                <td>0.38195</td>
+                                <td>0.381099</td>
+                                <td><strong>0.381080</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">MMD-14-3 (Min-Max-3) &darr;</th>
+                                <td class="sota">4.16578</td>
+                                <td>4.46410</td>
+                                <td><strong>4.16578</strong></td>
+                                <td>4.16584</td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">3rd-Autocorrelation &darr;</th>
+                                <td class="sota">1.45368</td>
+                                <td>1.46220</td>
+                                <td>1.46233</td>
+                                <td><strong>1.45649</strong></td>
+                            </tr>
+                            <tr>
+                                <th scope="rowgroup">Systems</th>
+                                <th scope="row">EPLB &uarr;</th>
+                                <td class="sota">0.1490</td>
+                                <td>0.1443</td>
+                                <td><strong>0.1467</strong></td>
+                                <td>0.1436</td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">LLM-SQL &uarr;</th>
+                                <td class="sota">0.7310</td>
+                                <td>0.7253</td>
+                                <td>0.7195</td>
+                                <td class="best"><strong>0.7331</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">Txn Scheduling &uarr;</th>
+                                <td class="sota">4566.0</td>
+                                <td>4081.6</td>
+                                <td>4201.7</td>
+                                <td><strong>4366.8</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">Cloudcast &darr;</th>
+                                <td class="sota">618.4</td>
+                                <td>696.1</td>
+                                <td class="best"><strong>618.0</strong></td>
+                                <td class="best"><strong>618.0</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">PRISM &uarr;</th>
+                                <td class="sota best"><span>26.26</span></td>
+                                <td class="best"><strong>26.26</strong></td>
+                                <td class="best"><strong>26.26</strong></td>
+                                <td class="best"><strong>26.26</strong></td>
+                            </tr>
+                            <tr>
+                                <th scope="rowgroup">Heuristics</th>
+                                <th scope="row">Territory (AHC008) &uarr;</th>
+                                <td class="sota">3463</td>
+                                <td>1161</td>
+                                <td>1208</td>
+                                <td><strong>1304</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">Halloween Candy (AHC015) &uarr;</th>
+                                <td class="sota">3506</td>
+                                <td>1985.67</td>
+                                <td>2268</td>
+                                <td><strong>2543</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">Graphorean (AHC016) &uarr;</th>
+                                <td class="sota">3517</td>
+                                <td>1621</td>
+                                <td>1782</td>
+                                <td><strong>2138</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">Balancing by Balance (AHC025) &uarr;</th>
+                                <td class="sota">3479</td>
+                                <td>1400</td>
+                                <td>1236</td>
+                                <td><strong>1470</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="group-spacer" aria-hidden="true"></td>
+                                <th scope="row">Stack of Boxes (AHC026) &uarr;</th>
+                                <td class="sota">3451</td>
+                                <td>2009.67</td>
+                                <td><strong>2618</strong></td>
+                                <td>1992</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <figure class="two-up">
+                    <div>
+                        <img
+                            src="assets/swarmresearch_signal_processing_horizontal.svg"
+                            alt="Median-sized SwarmResearch diff for Signal Processing"
+                        />
+                    </div>
+                    <div>
+                        <img
+                            src="assets/coral_signal_processing_horizontal.svg"
+                            alt="Median-sized CORAL diff for Signal Processing"
+                        />
+                    </div>
+                    <figcaption>
+                        Examples of median-sized SwarmResearch and CORAL
+                        diffs for <em>Signal Processing</em>.
+                    </figcaption>
+                </figure>
+
+                <p>
+                    <b>SwarmResearch's performance exceeds or matches evolutionary and multi-agent baselines on most open-ended optimization tasks, indicating more effective search of their solution spaces.</b> SwarmResearch exceeds performance of EvoX on 14/15 tasks. It clearly exceeds CORAL on 8/15 tasks and performs similarly on 5/15 tasks.  Differences between
+                    CORAL and SwarmResearch on mathematical optimization tasks Circle Packing, Erdos Min Overlap, and MMD-14-3 are
+                    small. They could be reduced by further solution polishing
+                    under higher budgets.
+                </p>
+                <p>
+                    <strong>SwarmResearch's experiments test higher-level changes than the baselines.
+                    </strong> For the average attempt and median task, SwarmResearch changes
+                    3.2&times; more lines of code than CORAL and 1.7&times; more than
+                    EvoX. For example, in Signal
+                    Processing, SwarmResearch's median-sized diff tries a
+                    different type of signal processing algorithm while CORAL's makes a targeted change to
+                    how signal corrections are computed. In
+                    AHC016, a median-sized diff from CORAL involves tuning thresholds,
+                    while a median-sized diff from SwarmResearch redesigns the solver into
+                    different modes applied under different conditions. On most
+                    tasks, higher-level experiments mean SwarmResearch discovers a
+                    better solution. However, within the budget, CORAL better
+                    exploited strong approaches and discovered meaningful
+                    low-level changes on the systems task EPLB and heuristics
+                    task AHC026.
+                </p>
+
+                <section class="references" aria-labelledby="references-heading">
+                    <h2 id="references-heading">References</h2>
+                    <ol>
+                        <li id="ref-autoresearch">
+                            Karpathy, Andrej. 2026. “autoresearch.”
+                            <em>GitHub</em>.
+                            <a href="https://github.com/karpathy/autoresearch"
+                                >github.com/karpathy/autoresearch</a
+                            >.
+                        </li>
+                        <li id="ref-spec-bench">
+                            Xia, Heming, Zhe Yang, Qingxiu Dong, Peiyi Wang,
+                            Yongqi Li, Tao Ge, Tianyu Liu, Wenjie Li, and
+                            Zhifang Sui. 2024. “Unlocking Efficiency in Large
+                            Language Model Inference: A Comprehensive Survey of
+                            Speculative Decoding.” <em>Findings of ACL</em>.
+                            <a href="https://aclanthology.org/2024.findings-acl.456"
+                                >ACL Anthology</a
+                            >.
+                        </li>
+                        <li id="ref-sam-decoding">
+                            Hu, Yuxuan, Ke Wang, Xiaokang Zhang, Fanjin Zhang,
+                            Cuiping Li, Hong Chen, and Jing Zhang. 2025. “SAM
+                            Decoding: Speculative Decoding via Suffix
+                            Automaton.” <em>ACL</em>.
+                        </li>
+                        <li id="ref-evox">
+                            Liu, Shu, Shubham Agarwal, Monishwaran Maheswaran,
+                            Mert Cemri, Zhifei Li, Qiuyang Mang, Ashwin Naren,
+                            Ethan Boneh, Audrey Cheng, Melissa Z. Pan, and
+                            others. 2026. “EvoX: Meta-Evolution for Automated
+                            Discovery.” <em>arXiv preprint arXiv:2602.23413</em>.
+                        </li>
+                        <li id="ref-coral">
+                            Qu, Ao, Han Zheng, Zijian Zhou, Yihao Yan, Yihong
+                            Tang, Shao Yong Ong, Fenglu Hong, Kaichen Zhou,
+                            Chonghe Jiang, Minwei Kong, Jiacheng Zhu, Xuan
+                            Jiang, Sirui Li, Cathy Wu, Bryan Kian Hsiang Low,
+                            Jinhua Zhao, and Paul Pu Liang. 2026. “CORAL:
+                            Towards Autonomous Multi-Agent Evolution for
+                            Open-Ended Discovery.”
+                            <em>arXiv preprint arXiv:2604.01658</em>.
+                            <a href="https://arxiv.org/pdf/2604.01658"
+                                >arXiv</a
+                            >.
+                        </li>
+                    </ol>
+                </section>
+            </article>
+        </main>
+    </body>
+</html>
