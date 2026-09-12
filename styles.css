@@ -91,6 +91,7 @@ body {
 #about a {
     color: #333;
     text-decoration: underline;
+    text-decoration-skip-ink: none;
     transition: color 0.2s ease;
 }
 
